@@ -14,8 +14,12 @@ from pathlib import Path
 # Import our data processing classes
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'utils'))
+sys.path.insert(0, os.path.dirname(__file__))
 from data_cleaner import DataCleaner
 from preprocessing import DataPreprocessor
+from services.inefficiency_analyzer import InefficencyAnalyzer
+from services.last_mile_optimizer import LastMileOptimizer
+from services.predictive_service import PredictiveVisibilityService
 
 app = Flask(__name__)
 CORS(app)
@@ -334,6 +338,78 @@ def download_file(file_type):
 
 
 # ============================================================================
+# ANALYSIS SERVICE ENDPOINTS
+# ============================================================================
+
+@app.route('/api/inefficiencies', methods=['GET'])
+def get_inefficiencies():
+    """Get inefficiency analysis using InefficencyAnalyzer"""
+    try:
+        processed_file = os.path.join(PROCESSED_DATA_PATH, 'cleaned_data.csv')
+        
+        if not os.path.exists(processed_file):
+            return jsonify({
+                'error': 'Processed data not found',
+                'hint': 'Run /api/preprocess-data endpoint first'
+            }), 400
+        
+        df = pd.read_csv(processed_file)
+        analyzer = InefficencyAnalyzer(df)
+        
+        return jsonify({
+            'inefficiencies': analyzer.find_inefficient_routes(),
+            'recommendations': analyzer.get_recommendations()
+        }), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/last-mile-comparison', methods=['GET'])
+def get_last_mile_comparison():
+    """Get last-mile delivery optimization recommendations"""
+    try:
+        processed_file = os.path.join(PROCESSED_DATA_PATH, 'cleaned_data.csv')
+        
+        if not os.path.exists(processed_file):
+            return jsonify({
+                'error': 'Processed data not found',
+                'hint': 'Run /api/preprocess-data endpoint first'
+            }), 400
+        
+        df = pd.read_csv(processed_file)
+        optimizer = LastMileOptimizer(df)
+        
+        return jsonify(optimizer.get_recommendation()), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/disruption-forecast', methods=['GET'])
+def get_disruption_forecast():
+    """Get disruption forecast and preventive actions"""
+    try:
+        processed_file = os.path.join(PROCESSED_DATA_PATH, 'cleaned_data.csv')
+        
+        if not os.path.exists(processed_file):
+            return jsonify({
+                'error': 'Processed data not found',
+                'hint': 'Run /api/preprocess-data endpoint first'
+            }), 400
+        
+        df = pd.read_csv(processed_file)
+        predictive = PredictiveVisibilityService(df)
+        
+        return jsonify({
+            'actions': predictive.get_disruption_actions()
+        }), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# ============================================================================
 # FULL PIPELINE ENDPOINT
 # ============================================================================
 
@@ -425,6 +501,9 @@ def not_found(error):
             'Inefficient Routes': 'GET /api/inefficient-routes',
             'Delayed Deliveries': 'GET /api/delayed-deliveries',
             'Partner Performance': 'GET /api/partner-performance',
+            'Inefficiencies': 'GET /api/inefficiencies',
+            'Last Mile Comparison': 'GET /api/last-mile-comparison',
+            'Disruption Forecast': 'GET /api/disruption-forecast',
             'Download': 'GET /api/download/<file_type>',
             'Complete Pipeline': 'POST /api/process-complete'
         }
@@ -450,9 +529,9 @@ if __name__ == '__main__':
     Path('data/processed').mkdir(parents=True, exist_ok=True)
     
     print("\n" + "="*70)
-    print("🚀 GreenRoute Analytics Backend")
+    print("GreenRoute Analytics Backend")
     print("="*70)
-    print("\n📡 Available API Endpoints:")
+    print("\nAvailable API Endpoints:")
     print("   • GET  /api/health                    - Health check")
     print("   • GET  /api/status                    - Processing status")
     print("   • POST /api/clean-data                - Clean raw data")
@@ -460,9 +539,12 @@ if __name__ == '__main__':
     print("   • GET  /api/inefficient-routes        - Get inefficient routes")
     print("   • GET  /api/delayed-deliveries        - Get delayed deliveries")
     print("   • GET  /api/partner-performance       - Get partner statistics")
+    print("   • GET  /api/inefficiencies            - Get inefficiency analysis")
+    print("   • GET  /api/last-mile-comparison      - Get last-mile optimization")
+    print("   • GET  /api/disruption-forecast       - Get disruption forecast")
     print("   • GET  /api/download/<file_type>      - Download processed data")
     print("   • POST /api/process-complete          - Run complete pipeline")
-    print("\n📊 Start with: POST /api/process-complete")
+    print("\nStart with: POST /api/process-complete")
     print("="*70 + "\n")
     
     # Run Flask app

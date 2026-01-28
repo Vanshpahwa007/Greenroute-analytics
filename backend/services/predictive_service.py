@@ -13,9 +13,9 @@ class PredictiveVisibilityService:
     
     def detect_anomalies(self):
         """Find unusual patterns"""
-        features = self.df[['Delivery_Cost' if 'Delivery_Cost' in self.df.columns else self.df.columns[0], 
-                            'Delivery_Time_Hours' if 'Delivery_Time_Hours' in self.df.columns else self.df.columns[1], 
-                            'Distance' if 'Distance' in self.df.columns else self.df.columns[2]]].values
+        features = self.df[['delivery_cost' if 'delivery_cost' in self.df.columns else self.df.columns[0], 
+                            'delivery_time_hours' if 'delivery_time_hours' in self.df.columns else self.df.columns[1], 
+                            'distance_km' if 'distance_km' in self.df.columns else self.df.columns[2]]].values
         
         iso = IsolationForest(contamination=0.05, random_state=42)
         anomalies = iso.fit_predict(features)

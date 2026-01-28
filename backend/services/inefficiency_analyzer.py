@@ -22,9 +22,9 @@ class InefficencyAnalyzer:
         return {
             'total_inefficient': len(inefficient),
             'percentage': round((len(inefficient) / len(self.df)) * 100, 2),
-            'wasted_cost_total': float(inefficient['Delivery_Cost'].sum()) if 'Delivery_Cost' in self.df.columns else 0,
+            'wasted_cost_total': float(inefficient['delivery_cost'].sum()) if 'delivery_cost' in self.df.columns else 0,
             'wasted_co2_total_kg': float(inefficient['co2_emissions_kg'].sum()),
-            'saveable_cost_25pct': float(inefficient['Delivery_Cost'].sum() * 0.25) if 'Delivery_Cost' in self.df.columns else 0,
+            'saveable_cost_25pct': float(inefficient['delivery_cost'].sum() * 0.25) if 'delivery_cost' in self.df.columns else 0,
             'reduceable_co2_25pct_kg': float(inefficient['co2_emissions_kg'].sum() * 0.25)
         }
     
@@ -35,9 +35,9 @@ class InefficencyAnalyzer:
         if len(inefficient_indices) == 0:
             return []
         
-        cost_col = 'Delivery_Cost' if 'Delivery_Cost' in self.df.columns else self.df.columns[0]
-        distance_col = 'Distance' if 'Distance' in self.df.columns else self.df.columns[1]
-        time_col = 'Delivery_Time_Hours' if 'Delivery_Time_Hours' in self.df.columns else self.df.columns[2]
+        cost_col = 'delivery_cost' if 'delivery_cost' in self.df.columns else self.df.columns[0]
+        distance_col = 'distance_km' if 'distance_km' in self.df.columns else self.df.columns[1]
+        time_col = 'delivery_time_hours' if 'delivery_time_hours' in self.df.columns else self.df.columns[2]
         
         features = self.df.loc[inefficient_indices, [cost_col, distance_col, time_col]].values
         

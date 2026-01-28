@@ -9,8 +9,8 @@ class LastMileOptimizer:
     
     def __init__(self, df):
         self.df = df
-        self.baseline_cost = df['Delivery_Cost'].mean() if 'Delivery_Cost' in df.columns else df.iloc[:, 0].mean()
-        self.baseline_time = df['Delivery_Time_Hours'].mean() if 'Delivery_Time_Hours' in df.columns else df.iloc[:, 1].mean()
+        self.baseline_cost = df['delivery_cost'].mean() if 'delivery_cost' in df.columns else df.iloc[:, 0].mean()
+        self.baseline_time = df['delivery_time_hours'].mean() if 'delivery_time_hours' in df.columns else df.iloc[:, 1].mean()
         self.baseline_co2 = df['co2_emissions_kg'].mean()
     
     def evaluate_options(self):
