@@ -205,3 +205,22 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# GreenRoute: Secrets & Environment (CRITICAL - SECURITY!)
+.env.local
+config/secrets.json
+
+# GreenRoute: Streamlit config
+.streamlit/
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# GreenRoute: IDE (additional common ones)
+.vscode/
+.DS_Store
+Thumbs.db
