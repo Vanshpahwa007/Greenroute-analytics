@@ -15,7 +15,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'utils'))
 from data_cleaner import DataCleaner
-from preprocessing import DataPreprocessor
+from utils.preprocessing import DataPreprocessor
 
 app = Flask(__name__)
 CORS(app)
